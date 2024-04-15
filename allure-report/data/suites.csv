@@ -1,0 +1,5 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Sun Apr 14 16:45:14 CDT 2024","Sun Apr 14 16:45:51 CDT 2024","36565","","planner_regression","","","","test_delete_scenario",""
+"broken","Sun Apr 14 16:44:54 CDT 2024","Sun Apr 14 16:45:14 CDT 2024","20027","","planner_regression","","","","test_save_scenario",""
+"passed","Sun Apr 14 16:45:14 CDT 2024","Sun Apr 14 16:45:14 CDT 2024","102","","planner_regression","","","","test_copy_scenario",""
+"passed","Sun Apr 14 16:44:48 CDT 2024","Sun Apr 14 16:44:54 CDT 2024","6169","","planner_regression","","","","test_create_scenario",""

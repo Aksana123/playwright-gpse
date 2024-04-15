@@ -1,0 +1,27 @@
+[1m[31mERROR   [0m root:management_page.py:68 Error occurred during deletion: Locator.click: Timeout 30000ms exceeded.
+Call log:
+waiting for locator("[data-testid='DeleteOutlineOutlinedIcon']").first
+  -   locator resolved to <svg focusable="false" aria-hidden="true" viewBox="0 …>…</svg>
+  - attempting click action
+  -   waiting for element to be visible, enabled and stable
+  -   element is visible, enabled and stable
+  -   scrolling into view if needed
+  -   done scrolling
+  -   <div tabindex="-1" role="dialog" class="ant-modal-wra…>…</div> from <div>…</div> subtree intercepts pointer events
+  - retrying click action, attempt #1
+  -   waiting for element to be visible, enabled and stable
+  -   element is visible, enabled and stable
+  -   scrolling into view if needed
+  -   done scrolling
+  -   <div tabindex="-1" role="dialog" class="ant-modal-wra…>…</div> from <div>…</div> subtree intercepts pointer events
+  - retrying click action, attempt #2
+  -   waiting 20ms
+  -   waiting for element to be visible, enabled and stable
+  -   element is visible, enabled and stable
+  -   scrolling into view if needed
+  -   done scrolling
+  -   <div tabindex="-1" role="dialog" class="ant-modal-wra…>…</div> from <div>…</div> subtree intercepts pointer events
+  - retrying click action, attempt #3
+  -   waiting 100ms
+  -   waiting for element to be visible, enabled and stable
+  - element was detached from the DOM, retrying
