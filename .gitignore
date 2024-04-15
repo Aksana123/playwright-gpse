@@ -8,6 +8,6 @@ __pycache__/
 .env
 .env.local
 *.log
-*.tmp
+*.tmpgit
 allure-report
 allure-results
