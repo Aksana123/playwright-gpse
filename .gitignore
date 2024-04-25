@@ -3,4 +3,5 @@ allure-report
 allure-results
 __pycache__
 .idea
-config.py
+.env
+app.log

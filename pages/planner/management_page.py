@@ -1,12 +1,13 @@
 from playwright.sync_api import Page
-import config
-import logging
+from pages.base_page import BasePage
+from utils import config
 import time
 import re
 
 
-class ManagementPage:
+class ManagementPage(BasePage):
     def __init__(self, page: Page):
+        super().__init__(page)
         self.page = page
         self.username_label = self.page.get_by_label("Username")
         self.password_label = self.page.get_by_label("Remember me")
@@ -14,6 +15,7 @@ class ManagementPage:
         self.product_filter_button = self.page.get_by_role("button", name="Product(s) ")
         self.total_levis_checkbox = self.page.get_by_label("Total Levi's")
         self.period_filter_button = self.page.get_by_role("button", name="Period(s) ")
+        self.select_company_title = self.page.get_by_role("heading", name="Select Company")
         self.fy21_checkbox = self.page.get_by_label("FY21")
         self.span = self.page.locator("#createForm span")
         self.simulation_filter_button = self.page.get_by_role("menuitem", name="Simulation ").locator("div")
@@ -28,6 +30,7 @@ class ManagementPage:
         self.enter_scenario_name = self.page.get_by_placeholder("Enter value").nth(1)
         self.update_button = self.page.get_by_role("button", name="Update").nth(1)
         self.edited_card_name = self.page.get_by_role("heading", name="Edited Regression Test")
+        self.created_card = self.page.get_by_role("heading", name="Regression Test")
         self.view_button = self.page.get_by_text("VIEW", exact=True)
         self.optimization_tab = self.page.get_by_text("Optimization", exact=True)
         self.percentage_input = self.page.locator("span").filter(has_text="Percentage %").get_by_role("textbox")
@@ -83,136 +86,89 @@ class ManagementPage:
         self.driver_save_popup = self.page.locator("span").filter(has_text="The simulation has run").locator("a")
 
     def create_scenario(self):
-        self.product_filter_button.click()
-        self.total_levis_checkbox.click()
-        self.period_filter_button.click()
-        self.fy21_checkbox.click()
-        self.span.nth(1).click()
-        self.simulation_filter_button.click()
-        self.scenario_name.click()
-        self.scenario_name.fill("Regression Test")
-        self.create_scenario_button.click()
+        self.click(self.product_filter_button)
+        self.click(self.total_levis_checkbox)
+        self.click(self.period_filter_button)
+        self.click(self.fy21_checkbox)
+        self.click(self.span.nth(1))
+        self.click(self.simulation_filter_button)
+        self.fill(self.scenario_name, "Regression Test")
+        self.click(self.create_scenario_button)
+        self.created_card.wait_for(state="visible", timeout=10000)
+        pass
+
+    def check_created_card_visible(self):
+        return self.created_card.is_visible()
+    pass
 
     def navigate_to_scenario(self):
-        self.page.goto(config.SCENARIO_PLANNER_PAGE)
+        self.navigate(config.SCENARIO_PLANNER_PAGE)
 
     def delete_scenario(self):
-        self.delete_icon.first.click()
-        self.delete_confirmation.click()
+        self.click(self.delete_icon.first)
+        self.click(self.delete_confirmation)
         time.sleep(3)
-        self.delete_icon.first.click()
-        self.delete_confirmation.click()
-
-        # while True:
-        #     delete_icon = self.delete_icon.first
-        #     if not delete_icon:
-        #         logging.info("No more delete icons found. Exiting loop.")
-        #         break
-        #     try:
-        #         delete_icon.click()
-        #         self.delete_confirmation.click()
-        #         logging.info("Delete icon clicked.")
-        #         time.sleep(0.5)
-        #         self.page.wait_for_selector_absent(self.delete_icon)
-        #     except Exception as e:
-        #         logging.error(f"Error occurred during deletion: {e}")
-        #         break
+        self.click(self.delete_icon.first)
+        self.click(self.delete_confirmation)
 
     def update_scenario(self):
-        self.edit_scenario_button.click()
-        self.enter_scenario_name.click()
-        self.enter_scenario_name.fill('Edited Regression Test')
-        self.update_button.click()
+        self.click(self.edit_scenario_button)
+        self.fill(self.enter_scenario_name, 'Edited Regression Test')
+        self.click(self.update_button)
 
     def optimize_scenario(self):
-        self.optimization_tab.click()
-        self.percentage_input.click()
-        self.percentage_input.fill("105")
-        self.optimize_button.click()
+        self.click(self.optimization_tab)
+        self.fill(self.percentage_input, "105")
+        self.click(self.optimize_button)
         time.sleep(3)
-        self.successful_optimization_popup.click()
+        self.click(self.successful_optimization_popup)
 
     def add_driver(self):
-        self.view_button.click()
-        self.add_driver_button.click()
-        self.page.wait_for_load_state("networkidle")
-        self.add_new_driver_name.fill("Test Automation")
-        self.new_driver_kpi_1.fill("1.5")
-        self.new_driver_kpi_2.fill("1.5")
-        self.new_driver_spend.fill("150000")
-        self.new_driver_activity.fill("200000")
-        self.new_driver_add_form_button.click()
-        self.add_new_driver_name.wait_for_selector("visible")
-        self.new_driver_spend_card.wait_for_selector("visible")
-        self.new_driver_activity_card.wait_for_selector("visible")
-        self.new_driver_roi_card.wait_for_selector("visible")
-        self.kpi_dropdown.click()
-        self.kpi_dropdown_kpi_2.wait_for_selector("visible")
-        self.kpi_dropdown_kpi_2.click()
-        self.add_new_driver_name.wait_for_selector("visible")
-        self.new_driver_spend_card.wait_for_selector("visible")
-        self.new_driver_activity_card.wait_for_selector("visible")
-        self.new_driver_roi_card.wait_for_selector("visible")
+        self.click(self.view_button)
+        self.click(self.add_driver_button)
+        self.fill(self.add_new_driver_name, "Test Automation")
+        self.fill(self.new_driver_kpi_1, "1.5")
+        self.fill(self.new_driver_kpi_2, "1.5")
+        self.fill(self.new_driver_spend, "150000")
+        self.fill(self.new_driver_activity, "200000")
+        self.click(self.new_driver_add_form_button)
 
     def add_al_driver(self):
-        self.add_driver_button.click()
-        self.page.wait_for_load_state("networkidle")
-        self.select_add_driver_dropdown.click()
-        self.select_al_driver.wait_for_selector("visible")
-        self.select_al_driver.click()
-        self.page.wait_for_load_state("networkidle")
-        self.add_new_driver_name.fill("AL Driver")
-        self.select_ecommerce_dropdown.first.click()
-        self.select_manual_entry.wait_for_selector("visible")
-        self.select_manual_entry.click()
-        self.select_ecommerce_dropdown.first.wait_for_selector("visible")
-        self.select_ecommerce_dropdown.first.click()
-        self.select_manual_entry.wait_for_selector("visible")
-        self.select_manual_entry.click()
-        self.new_al_driver_kpi_1.nth(2).fill("1.6")
-        self.new_al_driver_kpi_2.nth(2).fill("1.6")
-        self.new_al_driver_spend.first.fill("160000")
-        self.new_al_driver_activity.nth(1).fill("205000")
-        self.new_driver_add_form_button.click()
-        self.new_al_driver_name_card.wait_for_selector("visible")
-        self.new_al_driver_spend_card.wait_for_selector("visible")
-        self.new_al_driver_activity_card.wait_for_selector("visible")
-        self.new_al_driver_roi_card.wait_for_selector("visible")
-        self.kpi_dropdown.click()
-        self.kpi_dropdown_kpi_1.wait_for_selector("visible")
-        self.kpi_dropdown_kpi_1.click()
-        self.new_al_driver_name_card.wait_for_selector("visible")
-        self.new_al_driver_spend_card.wait_for_selector("visible")
-        self.new_al_driver_activity_card.wait_for_selector("visible")
-        self.new_al_driver_roi_card.wait_for_selector("visible")
+        self.click(self.add_driver_button)
+        self.click(self.select_add_driver_dropdown)
+        self.click(self.select_al_driver)
+        self.fill(self.add_new_driver_name, "AL Driver")
+        self.fill(self.new_al_driver_kpi_1, "1.6")
+        self.fill(self.new_al_driver_kpi_2, "1.6")
+        self.fill(self.new_al_driver_spend, "160000")
+        self.fill(self.new_al_driver_activity, "205000")
+        self.click(self.new_driver_add_form_button)
 
     def save_scenario(self):
-        self.save_dropdown.wait_for_selector("visible")
-        self.save_dropdown.dblclick()
+        self.double_click(self.save_dropdown)
         time.sleep(3)
-        self.page.evaluate('window.scrollTo(0, 0)')
-        while not self.save_button.is_visible():
-            self.save_dropdown.dblclick()
+        self.scroll_to_top()
+        while not self.is_visible(self.save_button):
+            self.double_click(self.save_dropdown)
             time.sleep(1)
-        self.save_button.click()
+        self.click(self.save_button)
 
     def save_as_scenario(self):
-        self.save_dropdown.dblclick()
-        self.page.evaluate('window.scrollTo(0, 0)')
-        while not self.save_as_button.is_visible():
-            self.save_dropdown.dblclick()
+        self.double_click(self.save_dropdown)
+        while not self.is_visible(self.save_as_button):
+            self.double_click(self.save_dropdown)
             time.sleep(1)
-        self.save_as_button.click()
-        self.save_new_scenario.click()
-        self.continue_with_new_scenario.click()
+        self.click(self.save_as_button)
+        self.click(self.save_new_scenario)
+        self.click(self.continue_with_new_scenario)
 
     def go_back_to_scenario_management_page(self):
         time.sleep(2)
-        self.page.goto(config.SCENARIO_PLANNER_PAGE)
-        self.page.wait_for_load_state("networkidle")
-
-        if self.successful_optimization_save.is_visible():
-            self.page.goto(config.SCENARIO_PLANNER_PAGE)
-
+        self.navigate(config.SCENARIO_PLANNER_PAGE)
+        if self.is_visible(self.successful_optimization_save):
+            self.navigate(config.SCENARIO_PLANNER_PAGE)
         if self.page.url == config.SCENARIO_PLANNER_PAGE:
-            self.updated_volume_card.wait_for_selector("visible")
+            self.wait_for_visible(self.updated_volume_card)
+
+    def double_click(self, save_dropdown):
+        pass
